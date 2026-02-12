@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taro — Van Life Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mint: #5FCCB8;
+    --mint-light: #e8f9f6;
+    --mint-dark: #3aaa96;
+    --beige: #F8F7F4;
+    --beige-dark: #ede9e0;
+    --ink: #1A1A1A;
+    --ink-soft: #4a4a4a;
+    --ink-muted: #8a8a8a;
+    --white: #ffffff;
+    --warm-orange: #E8845A;
+    --warm-yellow: #F2C94C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--beige);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 80px;
+    background: var(--beige);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .hero-left {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--mint);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 6vw, 82px);
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .hero-title span {
+    color: var(--mint);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  .hero-tagline {
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 56px;
+    border-left: 2px solid var(--mint);
+    padding-left: 20px;
+  }
+
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pill {
+    background: rgba(95, 204, 184, 0.12);
+    border: 1px solid rgba(95, 204, 184, 0.3);
+    color: var(--mint);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(95,204,184,0.15) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  .hero-turtle {
+    font-size: 180px;
+    position: relative;
+    z-index: 2;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 20px 60px rgba(95,204,184,0.3));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+  }
+
+  .hero-stat-grid {
+    position: absolute;
+    bottom: 120px;
+    right: 60px;
+    display: flex;
+    gap: 32px;
+    z-index: 2;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--white);
+    display: block;
+  }
+
+  .hero-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--mint);
+    max-width: 60px;
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    line-height: 1.15;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--mint-dark);
+  }
+
+  .section-body {
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    max-width: 640px;
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problem-section {
+    background: var(--beige);
+    padding: 100px 0;
+  }
+
+  .problem-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .problem-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-style: italic;
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .problem-quote::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -10px;
+    font-size: 80px;
+    color: var(--mint);
+    opacity: 0.4;
+    font-family: 'Playfair Display', serif;
+    line-height: 1;
+  }
+
+  .problem-quote cite {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 20px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .problem-points {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .problem-point {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .problem-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--mint-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .problem-point-text h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .problem-point-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ── CRITERIA BAND ── */
+  .criteria-band {
+    background: var(--ink);
+    padding: 32px 60px;
+    overflow: hidden;
+  }
+
+  .criteria-scroll {
+    display: flex;
+    gap: 0;
+    animation: scroll-left 20s linear infinite;
+    width: max-content;
+  }
+
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .criteria-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 48px;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .criteria-pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--mint);
+  }
+
+  .criteria-name {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── AUDIENCE FIT ── */
+  .audience-section {
+    background: var(--white);
+    padding: 100px 0;
+  }
+
+  .audience-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+    background: var(--beige-dark);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .audience-card {
+    background: var(--white);
+    padding: 44px 36px;
+    transition: background 0.3s;
+  }
+
+  .audience-card:hover { background: var(--mint-light); }
+
+  .audience-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: var(--mint);
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .audience-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .audience-card p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  /* ── FEATURES ── */
+  .features-section {
+    background: var(--beige);
+    padding: 100px 0;
+  }
+
+  .features-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  }
+
+  .feature-card.featured {
+    background: var(--ink);
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mint), var(--mint-dark));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+  .feature-card.featured::before { opacity: 1; }
+
+  .feature-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feature-card.featured .feature-tag { color: var(--mint); }
+
+  .feature-emoji {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    margin-bottom: 14px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .feature-card.featured .feature-title { color: var(--white); font-size: 32px; }
+
+  .feature-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .feature-card.featured .feature-desc { color: rgba(255,255,255,0.65); font-size: 16px; }
+
+  .feature-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .constellation-dots {
+    position: relative;
+    width: 280px;
+    height: 200px;
+  }
+
+  .dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--mint);
+    animation: glow-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-dot {
+    0%, 100% { box-shadow: 0 0 6px 2px rgba(95,204,184,0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 16px 6px rgba(95,204,184,0.7); transform: scale(1.3); }
+  }
+
+  .dot:nth-child(1) { width: 12px; height: 12px; top: 40px; left: 60px; animation-delay: 0s; }
+  .dot:nth-child(2) { width: 8px; height: 8px; top: 80px; left: 130px; animation-delay: 0.4s; }
+  .dot:nth-child(3) { width: 14px; height: 14px; top: 110px; left: 200px; animation-delay: 0.8s; }
+  .dot:nth-child(4) { width: 6px; height: 6px; top: 30px; left: 190px; animation-delay: 1.2s; }
+  .dot:nth-child(5) { width: 10px; height: 10px; top: 150px; left: 80px; animation-delay: 0.6s; }
+  .dot:nth-child(6) { width: 8px; height: 8px; top: 60px; left: 240px; animation-delay: 1.0s; }
+  .dot:nth-child(7) { width: 16px; height: 16px; top: 120px; left: 40px; animation-delay: 1.4s; }
+  .dot:nth-child(8) { width: 6px; height: 6px; top: 170px; left: 160px; animation-delay: 0.2s; }
+
+  .constellation-line {
+    position: absolute;
+    background: rgba(95,204,184,0.2);
+    height: 1px;
+    transform-origin: left center;
+  }
+
+  /* ── MONETIZATION ── */
+  .mono-section {
+    background: var(--ink);
+    padding: 100px 0;
+  }
+
+  .mono-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .mono-inner .section-title { color: var(--white); }
+  .mono-inner .section-label { color: var(--mint); }
+  .mono-inner .section-body { color: rgba(255,255,255,0.55); max-width: 100%; }
+
+  .mono-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .mono-card {
+    background: rgba(255,255,255,0.03);
+    padding: 48px 36px;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  .mono-card:hover { background: rgba(95,204,184,0.08); }
+
+  .mono-card.highlighted {
+    background: rgba(95,204,184,0.1);
+    border: 1px solid rgba(95,204,184,0.2);
+  }
+
+  .mono-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--mint);
+    color: var(--ink);
+    padding: 4px 12px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 24px;
+  }
+
+  .mono-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .mono-card-body {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .mono-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    color: var(--mint);
+  }
+
+  .mono-price-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    margin-left: 8px;
+  }
+
+  .mono-insight {
+    margin-top: 60px;
+    background: rgba(95,204,184,0.08);
+    border: 1px solid rgba(95,204,184,0.2);
+    border-radius: 16px;
+    padding: 32px 40px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .mono-insight-icon { font-size: 28px; flex-shrink: 0; }
+
+  .mono-insight-text h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--mint);
+    margin-bottom: 8px;
+  }
+
+  .mono-insight-text p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── TECH ── */
+  .tech-section {
+    background: var(--beige);
+    padding: 100px 0;
+  }
+
+  .tech-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .tech-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: transform 0.2s;
+  }
+
+  .tech-card:hover { transform: translateY(-3px); }
+
+  .tech-category {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mint-dark);
+    margin-bottom: 12px;
+  }
+
+  .tech-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tech-list li {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tech-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mint);
+    flex-shrink: 0;
+  }
+
+  .security-banner {
+    margin-top: 24px;
+    background: var(--mint-light);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    grid-column: span 4;
+  }
+
+  .security-banner-icon { font-size: 32px; }
+  .security-banner-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .security-banner-body {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ── INNOVATION ── */
+  .innovation-section {
+    background: var(--white);
+    padding: 100px 0;
+  }
+
+  .innovation-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .innovation-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+    align-items: center;
+  }
+
+  .comparison-table {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--beige-dark);
+  }
+
+  .comparison-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    background: var(--ink);
+    padding: 16px 24px;
+  }
+
+  .comparison-header span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .comparison-header span:first-child { color: rgba(255,255,255,0.4); }
+  .comparison-header span:nth-child(2) { color: rgba(255,255,255,0.4); text-align: center; }
+  .comparison-header span:nth-child(3) { color: var(--mint); text-align: center; }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--beige-dark);
+    background: var(--white);
+    transition: background 0.2s;
+  }
+
+  .comparison-row:last-child { border-bottom: none; }
+  .comparison-row:hover { background: var(--mint-light); }
+
+  .comparison-feature {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  .check { text-align: center; font-size: 16px; }
+  .yes { color: var(--mint-dark); }
+  .no { color: #ccc; }
+
+  .innovation-points {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .innovation-point {
+    border-left: 3px solid var(--mint);
+    padding-left: 24px;
+  }
+
+  .innovation-point h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .innovation-point p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+
+  /* ── BUILDER ── */
+  .builder-section {
+    background: var(--beige);
+    padding: 80px 0;
+    border-top: 1px solid var(--beige-dark);
+  }
+
+  .builder-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .builder-left h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .builder-left p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .builder-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  .builder-detail {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 260px;
+  }
+
+  .builder-detail-icon { font-size: 20px; }
+  .builder-detail-text { font-size: 14px; font-weight: 400; color: var(--ink-soft); }
+  .builder-detail-text strong { color: var(--ink); font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 60px;
+    text-align: center;
+  }
+
+  .footer-turtle { font-size: 48px; display: block; margin-bottom: 16px; }
+
+  .footer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .footer-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .footer-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 300;
+  }
+
+  .footer-meta span { color: var(--mint); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--beige-dark), transparent);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">RevenueCat Shipyard Hackathon · 2026</div>
+    <h1 class="hero-title">Taro<br><span>Van Life</span><br>Community</h1>
+    <p class="hero-sub">Built for the road. Built for the people on it.</p>
+    <p class="hero-tagline">
+      The world's first van life super-app — swipe for dates, find adventure buddies by interest, and hire verified builders. All while living on the road.
+    </p>
+    <div class="hero-pills">
+      <span class="pill">🗺️ Trip-Based Matching</span>
+      <span class="pill">❤️ Nomadic Dating</span>
+      <span class="pill">🔨 Builder Marketplace</span>
+      <span class="pill">🌍 Constellation Map</span>
+      <span class="pill">💬 Community Chat</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-turtle"><img src="assets/taro.png" alt="Taro" /></div>
+    <div class="hero-stat-grid">
+      <div class="hero-stat">
+        <span class="hero-stat-num">3</span>
+        <span class="hero-stat-label">Core Pillars</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">14</span>
+        <span class="hero-stat-label">Onboarding Screens</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">2</span>
+        <span class="hero-stat-label">Revenue Streams</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRITERIA TICKER -->
+<div class="criteria-band">
+  <div class="criteria-scroll">
+    <div class="criteria-item">
+      <span class="criteria-pct">6</span>
+      <span class="criteria-name">Community apps tested</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">3</span>
+      <span class="criteria-name">Paid subscriptions analyzed</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">20+</span>
+      <span class="criteria-name">User conversations</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">1</span>
+      <span class="criteria-name">Intentional philosophy</span>
+    </div>
+
+    <!-- repeat for loop -->
+    <div class="criteria-item">
+      <span class="criteria-pct">6</span>
+      <span class="criteria-name">Community apps tested</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">3</span>
+      <span class="criteria-name">Paid subscriptions analyzed</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">20+</span>
+      <span class="criteria-name">User conversations</span>
+    </div>
+    <div class="criteria-item">
+      <span class="criteria-pct">1</span>
+      <span class="criteria-name">Intentional philosophy</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- PROBLEM -->
+<section class="problem-section">
+  <div class="problem-inner">
+    <div class="fade-up">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">Vanlife is hard<br><em>Finding community shouldn't be</em></h2>
+      <p class="section-body">
+        Van lifers are always moving. Traditional social apps are built for people who stay in one place — they show you who's nearby <em>right now</em>, not who you'll actually be able to meet. The result: missed connections, empty screens, and a community that stays isolated despite being surrounded by like-minded people.
+      </p>
+      <br><br>
+      <div class="problem-points">
+        <div class="problem-point">
+          <div class="problem-icon">📍</div>
+          <div class="problem-point-text">
+            <h4>Location-based apps fail nomads</h4>
+            <p>You're in Moab for 4 days. Tinder shows you people 2 miles away who live there permanently. Not useful.</p>
+          </div>
+        </div>
+        <div class="problem-point">
+          <div class="problem-icon">🔧</div>
+          <div class="problem-point-text">
+            <h4>No trusted builder network exists</h4>
+            <p>Van breaks down? You're Googling strangers or posting to Facebook groups with no vetting, no ratings, no accountability.</p>
+          </div>
+        </div>
+        <div class="problem-point">
+          <div class="problem-icon">🛡️</div>
+          <div class="problem-point-text">
+            <h4>Van life is a protected community</h4>
+            <p>It's tight-knit for a reason. Any solution needs to be intentional — verified access, not just another open social app.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fade-up">
+      <blockquote class="problem-quote">
+        It's been lonelier than I expected. There's a specific kind of lonely that comes from being somewhere beautiful and having nobody to share it with.
+        <cite>— Marvin Tai, Taro founder. Gap year in Japan, 2026.</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE FIT — 30% -->
+<section class="audience-section">
+  <div class="audience-inner">
+    <div class="fade-up">
+      <div class="section-label">Our audience</div>
+      <h2 class="section-title">Built for one specific person:<br><em>the van lifer</em></h2>
+      <p class="section-body">
+        Every feature in Taro starts with a single question: how does a van lifer actually live? Not where they are — where they're <em>going</em>. Not who's nearby — who they'll actually be able to meet.
+      </p>
+    </div>
+    <div class="audience-grid fade-up">
+      <div class="audience-card">
+        <span class="audience-card-num">01</span>
+        <h3>Trip-Based Matching</h3>
+        <p>Match people heading to the same destination. Both going to Moab next week? You rank higher in each other's daily matches. No other app does this.</p>
+      </div>
+      <div class="audience-card">
+        <span class="audience-card-num">02</span>
+        <h3>Interest-Based Friendships</h3>
+        <p>Select interests at onboarding — climbing, surfing, yoga, photography. Find people doing the same things, heading to the same places. Not just proximity.</p>
+      </div>
+      <div class="audience-card">
+        <span class="audience-card-num">03</span>
+        <h3>Layered Community Chat</h3>
+        <p>Three chat types: direct messages, city chats (everyone in Portland now), destination chats (everyone heading to Big Sur). Mirrors how van lifers actually communicate.</p>
+      </div>
+      <div class="audience-card">
+        <span class="audience-card-num">04</span>
+        <h3>Verified Builder Help</h3>
+        <p>Van breaks down in Flagstaff? Browse verified builders by specialty — electrical, plumbing, mechanical — with real ratings and hourly rates. Hire directly in-app.</p>
+      </div>
+      <div class="audience-card">
+        <span class="audience-card-num">05</span>
+        <h3>Gender + Preference Matching</h3>
+        <p>Onboarding collects gender identity and match preference. The algorithm only shows you people you want to meet. Safety and intention built-in from day one.</p>
+      </div>
+      <div class="audience-card">
+        <span class="audience-card-num">06</span>
+        <h3>Nomadic Dating</h3>
+        <p>Daily match batch of 5. Swipe-based with shared destination context shown on each card. "Both heading to Zion in 3 days." Urgency built in naturally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES — with Constellation highlight -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="fade-up">
+      <div class="section-label">Key Features</div>
+      <h2 class="section-title">Intuitive, polished,<br><em>and unforgettable</em></h2>
+    </div>
+    <div class="features-grid fade-up">
+
+      <!-- CONSTELLATION — FEATURED -->
+      <div class="feature-card featured">
+        <div>
+          <span class="feature-tag">⭐ Viral Feature</span>
+          <h3 class="feature-title">Community<br>Live Map</h3>
+          <p class="feature-desc">
+            Real-time map showing an Apple-Maps style view showing activities started by van lifers nearby.
+
+            Climbing sessions. Campfire meetups. Build days.
+            Tap to join. Or create your own activity.
+            
+            Proof that the road isn’t empty.
+            It’s active. Built for virality. Built for proof the community is real. Designed to be screenshot-worthy.
+          </p>
+        </div>
+        <div class="feature-visual">
+          <div class="constellation-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-tag">Onboarding</span>
+        <span class="feature-emoji">📱</span>
+        <h3 class="feature-title">14-Screen<br>Onboarding</h3>
+        <p class="feature-desc">Designed by testing real apps — TimeLeft, NomadTable, TripBFF. Photo upload, van type, interests, gender identity, match preference. Collects rich data without feeling like a form.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-tag">Safety</span>
+        <span class="feature-emoji">✅</span>
+        <h3 class="feature-title">Verified<br>Community Access</h3>
+        <p class="feature-desc">Email authentication, builder profile verification, RLS policies on every table. The community stays intentional. Not just anyone gets in — that's the point.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-tag">Discovery</span>
+        <span class="feature-emoji">🗺️</span>
+        <h3 class="feature-title">Trending<br>Destinations</h3>
+        <p class="feature-desc">Home screen surfaces destinations with the most van lifers heading there. "5 people going to Moab in March." Creates FOMO, drives trip planning, increases engagement loops.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-tag">Marketplace</span>
+        <span class="feature-emoji">🔨</span>
+        <h3 class="feature-title">Builder<br>Marketplace</h3>
+        <p class="feature-desc">Photo-first grid of verified builders. Filter by specialty, rate, rating. Tap to message and hire. Stars, verified badges, hourly rates shown upfront. Built like a dating app, used like a services marketplace.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MONETIZATION — 20% -->
+<section class="mono-section">
+  <div class="mono-inner">
+    <div class="fade-up">
+      <div class="section-label" style="color:var(--mint)">Monetization</div>
+      <h2 class="section-title" style="color:var(--white)">Two revenue streams.<br><em style="color:var(--mint)">One live. Two planned.</em></h2>
+      <p class="section-body">
+        The subscription model was designed from real user research — not guesswork. I paid for TimeLeft and NomadTable specifically to test whether a hard paywall upfront changes user behavior. It does. People who commit financially show up more, engage more, and stay longer.
+      </p>
+    </div>
+    <div class="mono-grid fade-up">
+      <div class="mono-card highlighted">
+        <span class="mono-badge">Primary</span>
+        <h3 class="mono-card-title">Subscription Access</h3>
+        <p class="mono-card-body">Hard paywall via RevenueCat before accessing matching, messaging, and full community features. Filters for serious users. Proven to increase retention and event attendance in comparable apps.</p>
+        <div>
+          <span class="mono-price">$7.99</span>
+          <span class="mono-price-label">/ month</span>
+        </div>
+      </div>
+      <div class="mono-card">
+        <span class="mono-badge">Future</span>
+        <h3 class="mono-card-title">Builder Listing Fee</h3>
+        <p class="mono-card-body">Builders pay to be listed in the marketplace. Users pay to access and message them. Two-sided fee structure. As the builder network grows, so does the value on both sides.</p>
+        <div>
+          <span class="mono-price">$6.99</span>
+          <span class="mono-price-label">/ listing / month</span>
+        </div>
+      </div>
+      <div class="mono-card">
+        <span class="mono-badge">Future</span>
+        <h3 class="mono-card-title">Premium Tier</h3>
+        <p class="mono-card-body">Map visibility boost, activity visibility boost, priority builder matching, verified badge. Unlocks for power users who want to be seen and found first.</p>
+        <div>
+          <span class="mono-price">$15.99</span>
+          <span class="mono-price-label">/ month</span>
+        </div>
+      </div>
+    </div>
+    <div class="mono-insight fade-up">
+      <div class="mono-insight-icon">💡</div>
+      <div class="mono-insight-text">
+        <h4>Research-Backed Insight</h4>
+        <p>Before writing a line of code, I downloaded and paid for 5–6 competing community apps. The one consistent finding: a hard paywall placed <em>before</em> showing app value — not after a free trial — creates significantly higher user commitment. People who invest upfront don't ghost events. They show up. That finding shaped Taro's entire monetization approach.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUILDER SECTION -->
+<section class="builder-section">
+  <div class="builder-inner fade-up">
+    <div class="builder-left">
+      <h2>Built by Marvin Tai 🇭🇰</h2>
+      <p>21 years old. Gap year in Japan, training for Hong Kong's national climbing team. Non-technical founder who taught himself React Native from scratch. This was his first shipped app — built in a few weeks, tested on TestFlight, seeded with real demo data.</p>
+    </div>
+    <div class="builder-right">
+      <div class="builder-detail">
+        <div class="builder-detail-icon">📍</div>
+        <div class="builder-detail-text"><strong>Built in</strong> Japan 🇯🇵</div>
+      </div>
+      <div class="builder-detail">
+        <div class="builder-detail-icon">🧗</div>
+        <div class="builder-detail-text"><strong>Training for</strong> HK National Climbing Team</div>
+      </div>
+      <div class="builder-detail">
+        <div class="builder-detail-icon">📱</div>
+        <div class="builder-detail-text"><strong>First app.</strong> Shipped to TestFlight.</div>
+      </div>
+      <div class="builder-detail">
+        <div class="builder-detail-icon">💳</div>
+        <div class="builder-detail-text"><strong>Paid for</strong> TimeLeft, NomadTable, 4 others</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-turtle"><img src="assets/taro.png" alt="Taro" /></span>
+  <div class="footer-title">Taro — Van Life Community</div>
+  <div class="footer-sub">RevenueCat Shipyard Hackathon · 2026</div>
+  <div class="footer-meta">Built with <span>React Native · Supabase · RevenueCat · Expo</span></div>
+</footer>
+
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
